@@ -1,0 +1,29 @@
+{
+    "name": "james.xue/esign-sdk",
+    "description": "esign",
+    "autoload": {
+        "psr-4": {
+            "Vinhson\\EsignSdk\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Vinhson\\EsignSdk\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "xiaoxuan6",
+            "email": "1527736751@qq.com"
+        }
+    ],
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0.0",
+        "phpunit/phpunit": "^9.5"
+    },
+    "require": {
+        "pimple/pimple": "^3.5",
+        "guzzlehttp/guzzle": "^7.5",
+        "ext-json": "*"
+    }
+}
