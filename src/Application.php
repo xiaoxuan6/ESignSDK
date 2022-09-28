@@ -11,18 +11,19 @@
 
 namespace Vinhson\EsignSdk;
 
-use Vinhson\EsignSdk\OCR\Client;
 use Vinhson\EsignSdk\Kernel\ServiceContainer;
 
 /**
  * Class Application
  * @package Vinhson\EsignSdk
  *
- * @property Client $ocr
+ * @property OCR\Client $ocr
+ * @property Enterprise\Client $enterprise
  */
 class Application extends ServiceContainer
 {
     protected $providers = [
-        OCR\ServiceProvider::class
+        OCR\ServiceProvider::class,
+        Enterprise\ServiceProvider::class
     ];
 }
