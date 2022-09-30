@@ -11,7 +11,9 @@
 
 namespace Vinhson\EsignSdk\Tests;
 
+use Mockery;
 use Vinhson\EsignSdk\Application;
+use Vinhson\EsignSdk\Response\Response;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
@@ -20,13 +22,29 @@ class TestCase extends \PHPUnit\Framework\TestCase
      */
     protected $app;
 
+    protected $config;
+
     protected function setUp(): void
     {
-        $this->app = new Application([
-            'app_id' => 'xxxx',
-            'app_key' => 'xxxx',
+        $this->config = [
+            'app_id' => 'xxx',
+            'app_key' => 'xxx',
             'verify' => false,
             'mode' => 'local',
-        ]);
+        ];
+
+        $this->app = Mockery::mock(Application::class, $this->config);
+    }
+
+    protected function checkData(array $data, Response $response)
+    {
+        foreach ($data as $k => $v) {
+            if ($k == 'verifyId') {
+                continue;
+            }
+
+            $method = sprintf("get%s", ucfirst($k));
+            $this->assertSame($v, $response->{$method}());
+        }
     }
 }

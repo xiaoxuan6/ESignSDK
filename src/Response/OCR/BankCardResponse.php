@@ -15,4 +15,27 @@ use Vinhson\EsignSdk\Response\Response;
 
 class BankCardResponse extends Response
 {
+    /**
+     * @return string
+     */
+    public function getBankCardNo(): string
+    {
+        return $this->getData()['bankCardNo'] ?? '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getBankName(): string
+    {
+        return $this->getData()['bankName'] ?? '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getBankCardType(): string
+    {
+        return $this->getData()['bankCardType'] ?? '';
+    }
 }

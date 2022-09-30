@@ -15,4 +15,43 @@ use Vinhson\EsignSdk\Response\Response;
 
 class IdCardResponse extends Response
 {
+    public function getName()
+    {
+        return $this->getData()['name'] ?? '';
+    }
+
+    public function getIdNo()
+    {
+        return $this->getData()['idNo'] ?? '';
+    }
+
+    public function getGender()
+    {
+        return $this->getData()['gender'] ?? '';
+    }
+
+    public function getBirthDay()
+    {
+        return $this->getData()['birthDay'] ?? '';
+    }
+
+    public function getNation()
+    {
+        return $this->getData()['nation'] ?? '';
+    }
+
+    public function getAddress()
+    {
+        return $this->getData()['address'] ?? '';
+    }
+
+    public function getValidityPeriod()
+    {
+        return $this->getData()['validityPeriod'] ?? '';
+    }
+
+    public function getIssuedBy()
+    {
+        return $this->getData()['issuedBy'] ?? '';
+    }
 }
