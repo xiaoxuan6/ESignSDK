@@ -23,10 +23,10 @@ class Client extends BaseClient
      * @param string $emblemImg 身份证国徽面图片BASE64字符串
      *      infoImg与emblemImg至少传一个值
      *
-     * @return mixed
+     * @return array
      * @throws GuzzleException
      */
-    public function idCard(string $infoImg, string $emblemImg)
+    public function idCard(string $infoImg, string $emblemImg): array
     {
         return $this->post('/v2/identity/auth/api/ocr/idcard', array_filter([
             'infoImg' => $infoImg,
@@ -41,10 +41,10 @@ class Client extends BaseClient
      *      注意不要带图片BASE64前缀“data:image/jpeg;base64,”
      *      图片类型支持：jpg，jpeg，png，bmp
      *      图片建议分辨率为1024*768，图片大小控制在3M以内
-     * @return mixed
+     * @return array
      * @throws GuzzleException
      */
-    public function bankCard(string $img)
+    public function bankCard(string $img): array
     {
         return $this->post('/v2/identity/auth/api/ocr/bankcard', [
             'img' => $img
@@ -58,10 +58,10 @@ class Client extends BaseClient
      *      注意不要带图片BASE64前缀“data:image/jpeg;base64,”
      *      图片类型支持：jpg，jpeg，png，bmp。
      *      图片建议分辨率为1024*768，图片大小控制在3M以内
-     * @return mixed
+     * @return array
      * @throws GuzzleException
      */
-    public function license(string $img)
+    public function license(string $img): array
     {
         return $this->post('/v2/identity/auth/api/ocr/license', [
             'img' => $img
@@ -80,10 +80,10 @@ class Client extends BaseClient
      *      图片类型支持：jpg，jpeg，png，bmp。
      *      图片建议分辨率为1024*768，图片大小控制在3M以内
      * @param string $requestId 请求id，标识一次客户的请求，允许为空，一般使用客户的业务id
-     * @return mixed
+     * @return array
      * @throws GuzzleException
      */
-    public function drivingLicence(string $image, string $backImage = '', string $requestId = '')
+    public function drivingLicence(string $image, string $backImage = '', string $requestId = ''): array
     {
         return $this->post('/v2/identity/auth/api/ocr/drivinglicence', [
             'image' => $image,
@@ -104,10 +104,10 @@ class Client extends BaseClient
      *      图片类型支持：jpg，jpeg，png，bmp。
      *      图片建议分辨率为1024*768，图片大小控制在3M以内
      * @param string $requestId 请求id，标识一次客户的请求，允许为空，一般使用客户的业务id
-     * @return mixed
+     * @return array
      * @throws GuzzleException
      */
-    public function drivingPermit(string $image, string $backImage = '', string $requestId = '')
+    public function drivingPermit(string $image, string $backImage = '', string $requestId = ''): array
     {
         return $this->post('/v2/identity/auth/api/ocr/drivingPermit', [
             'image' => $image,

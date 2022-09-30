@@ -30,6 +30,9 @@ class BaseClient
      */
     public $app;
 
+    /**
+     * @var mixed|string
+     */
     protected $mode;
 
     public $baseUri = '';
@@ -42,25 +45,35 @@ class BaseClient
     }
 
     /**
+     * @param $url
+     * @param array $query
+     * @return array
      * @throws GuzzleException
      */
-    public function get($url, array $query = [])
+    public function get($url, array $query = []): array
     {
         return $this->request($url, 'GET', ['query' => $query]);
     }
 
     /**
+     * @param $url
+     * @param array $params
+     * @return array
      * @throws GuzzleException
      */
-    public function post($url, array $params = [])
+    public function post($url, array $params = []): array
     {
         return $this->request($url, 'POST', ['json' => $params]);
     }
 
     /**
+     * @param $url
+     * @param $method
+     * @param array $options
+     * @return array
      * @throws GuzzleException
      */
-    public function request($url, $method, array $options = [])
+    public function request($url, $method, array $options = []): array
     {
         $options = $this->formatOptions($url, $method, $options);
 
@@ -94,6 +107,12 @@ class BaseClient
         ];
     }
 
+    /**
+     * @param $url
+     * @param $method
+     * @param array $options
+     * @return array
+     */
     private function formatOptions($url, $method, array $options = []): array
     {
         if (! isset($options['headers']) || empty($options['headers'])) {
