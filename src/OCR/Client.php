@@ -11,8 +11,8 @@
 
 namespace Vinhson\EsignSdk\OCR;
 
-use GuzzleHttp\Exception\GuzzleException;
 use Vinhson\EsignSdk\Kernel\BaseClient;
+use GuzzleHttp\Exception\GuzzleException;
 
 class Client extends BaseClient
 {

@@ -37,6 +37,7 @@ trait SignatureTrait
         $signStr .= '' . $url;
 
         $signature = hash_hmac("sha256", utf8_encode($signStr), utf8_encode($app_key), true);
+
         return base64_encode($signature);
     }
 
