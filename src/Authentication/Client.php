@@ -13,6 +13,7 @@ namespace Vinhson\EsignSdk\Authentication;
 
 use Vinhson\EsignSdk\Kernel\BaseClient;
 use GuzzleHttp\Exception\GuzzleException;
+use Vinhson\EsignSdk\Response\Authentication\{AuthFlowDetailResponse, AuthFlowResponse};
 
 class Client extends BaseClient
 {
@@ -20,23 +21,23 @@ class Client extends BaseClient
      * 查询认证主流程明细
      *
      * @param string $flowId 认证流程ID
-     * @return array
+     * @return AuthFlowResponse
      * @throws GuzzleException
      */
-    public function authFlow(string $flowId): array
+    public function authFlow(string $flowId): AuthFlowResponse
     {
-        return $this->get(sprintf('/v2/identity/auth/api/common/%s/outline', $flowId));
+        return new AuthFlowResponse($this->get(sprintf('/v2/identity/auth/api/common/%s/outline', $flowId)));
     }
 
     /**
      * 查询认证信息
      *
      * @param string $flowId 认证流程ID
-     * @return array
+     * @return AuthFlowDetailResponse
      * @throws GuzzleException
      */
-    public function authFlowDetail(string $flowId): array
+    public function authFlowDetail(string $flowId): AuthFlowDetailResponse
     {
-        return $this->get(sprintf('/v2/identity/auth/api/common/%s/detail', $flowId));
+        return new AuthFlowDetailResponse($this->get(sprintf('/v2/identity/auth/api/common/%s/detail', $flowId)));
     }
 }

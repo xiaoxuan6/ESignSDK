@@ -13,6 +13,11 @@ namespace Vinhson\EsignSdk\OCR;
 
 use Vinhson\EsignSdk\Kernel\BaseClient;
 use GuzzleHttp\Exception\GuzzleException;
+use Vinhson\EsignSdk\Response\OCR\{BankCardResponse,
+    DrivingLicenceResponse,
+    DrivingPermitResponse,
+    IdCardResponse,
+    LicenseResponse};
 
 class Client extends BaseClient
 {
@@ -23,15 +28,15 @@ class Client extends BaseClient
      * @param string $emblemImg 身份证国徽面图片BASE64字符串
      *      infoImg与emblemImg至少传一个值
      *
-     * @return array
+     * @return IdCardResponse
      * @throws GuzzleException
      */
-    public function idCard(string $infoImg, string $emblemImg): array
+    public function idCard(string $infoImg, string $emblemImg): IdCardResponse
     {
-        return $this->post('/v2/identity/auth/api/ocr/idcard', array_filter([
+        return new IdCardResponse($this->post('/v2/identity/auth/api/ocr/idcard', array_filter([
             'infoImg' => $infoImg,
             'emblemImg' => $emblemImg
-        ]));
+        ])));
     }
 
     /**
@@ -41,14 +46,14 @@ class Client extends BaseClient
      *      注意不要带图片BASE64前缀“data:image/jpeg;base64,”
      *      图片类型支持：jpg，jpeg，png，bmp
      *      图片建议分辨率为1024*768，图片大小控制在3M以内
-     * @return array
+     * @return BankCardResponse
      * @throws GuzzleException
      */
-    public function bankCard(string $img): array
+    public function bankCard(string $img): BankCardResponse
     {
-        return $this->post('/v2/identity/auth/api/ocr/bankcard', [
+        return new BankCardResponse($this->post('/v2/identity/auth/api/ocr/bankcard', [
             'img' => $img
-        ]);
+        ]));
     }
 
     /**
@@ -58,14 +63,14 @@ class Client extends BaseClient
      *      注意不要带图片BASE64前缀“data:image/jpeg;base64,”
      *      图片类型支持：jpg，jpeg，png，bmp。
      *      图片建议分辨率为1024*768，图片大小控制在3M以内
-     * @return array
+     * @return LicenseResponse
      * @throws GuzzleException
      */
-    public function license(string $img): array
+    public function license(string $img): LicenseResponse
     {
-        return $this->post('/v2/identity/auth/api/ocr/license', [
+        return new LicenseResponse($this->post('/v2/identity/auth/api/ocr/license', [
             'img' => $img
-        ]);
+        ]));
     }
 
     /**
@@ -80,16 +85,16 @@ class Client extends BaseClient
      *      图片类型支持：jpg，jpeg，png，bmp。
      *      图片建议分辨率为1024*768，图片大小控制在3M以内
      * @param string $requestId 请求id，标识一次客户的请求，允许为空，一般使用客户的业务id
-     * @return array
+     * @return DrivingLicenceResponse
      * @throws GuzzleException
      */
-    public function drivingLicence(string $image, string $backImage = '', string $requestId = ''): array
+    public function drivingLicence(string $image, string $backImage = '', string $requestId = ''): DrivingLicenceResponse
     {
-        return $this->post('/v2/identity/auth/api/ocr/drivinglicence', [
+        return new DrivingLicenceResponse($this->post('/v2/identity/auth/api/ocr/drivinglicence', [
             'image' => $image,
             'backImage' => $backImage,
             'requestId' => $requestId,
-        ]);
+        ]));
     }
 
     /**
@@ -104,15 +109,15 @@ class Client extends BaseClient
      *      图片类型支持：jpg，jpeg，png，bmp。
      *      图片建议分辨率为1024*768，图片大小控制在3M以内
      * @param string $requestId 请求id，标识一次客户的请求，允许为空，一般使用客户的业务id
-     * @return array
+     * @return DrivingPermitResponse
      * @throws GuzzleException
      */
-    public function drivingPermit(string $image, string $backImage = '', string $requestId = ''): array
+    public function drivingPermit(string $image, string $backImage = '', string $requestId = ''): DrivingPermitResponse
     {
-        return $this->post('/v2/identity/auth/api/ocr/drivingPermit', [
+        return new DrivingPermitResponse($this->post('/v2/identity/auth/api/ocr/drivingPermit', [
             'image' => $image,
             'backImage' => $backImage,
             'requestId' => $requestId,
-        ]);
+        ]));
     }
 }

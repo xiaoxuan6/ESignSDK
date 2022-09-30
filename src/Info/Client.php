@@ -13,6 +13,20 @@ namespace Vinhson\EsignSdk\Info;
 
 use Vinhson\EsignSdk\Kernel\BaseClient;
 use GuzzleHttp\Exception\GuzzleException;
+use Vinhson\EsignSdk\Response\Info\{Enterprise3ElementsResponse,
+    Enterprise4ElementsResponse,
+    Lawyer3ElementsResponse,
+    Organization2ElementsResponse,
+    Organization3ElementsResponse,
+    PersonBankCard3ElementsDetailResponse,
+    PersonBankCard3ElementsResponse,
+    PersonBankCard4ElementsDetailResponse,
+    PersonBankCard4ElementsResponse,
+    PersonFaceCompareResponse,
+    PersonThreeElementsDetailResponse,
+    PersonThreeElementsResponse,
+    PersonTwoElementsResponse,
+    Social3ElementsResponse};
 
 class Client extends BaseClient
 {
@@ -21,15 +35,15 @@ class Client extends BaseClient
      *
      * @param string $name 姓名
      * @param string $idNo 身份证号（大陆二代身份证）
-     * @return array
+     * @return PersonTwoElementsResponse
      * @throws GuzzleException
      */
-    public function personTwoElements(string $name, string $idNo): array
+    public function personTwoElements(string $name, string $idNo): PersonTwoElementsResponse
     {
-        return $this->post('/v2/identity/verify/individual/base', [
+        return new PersonTwoElementsResponse($this->post('/v2/identity/verify/individual/base', [
             'name' => $name,
             'idNo' => $idNo
-        ]);
+        ]));
     }
 
     /**
@@ -38,16 +52,16 @@ class Client extends BaseClient
      * @param string $name 姓名
      * @param string $idNo 身份证号（大陆二代身份证）
      * @param string $mobileNo 手机号（中国大陆3大运营商）
-     * @return array
+     * @return PersonThreeElementsResponse
      * @throws GuzzleException
      */
-    public function personThreeElements(string $name, string $idNo, string $mobileNo): array
+    public function personThreeElements(string $name, string $idNo, string $mobileNo): PersonThreeElementsResponse
     {
-        return $this->post('/v2/identity/verify/individual/telecom3Factors', [
+        return new PersonThreeElementsResponse($this->post('/v2/identity/verify/individual/telecom3Factors', [
             'name' => $name,
             'idNo' => $idNo,
             'mobileNo' => $mobileNo
-        ]);
+        ]));
     }
 
     /**
@@ -56,16 +70,16 @@ class Client extends BaseClient
      * @param string $name 姓名
      * @param string $idNo 身份证号（大陆二代身份证）
      * @param string $mobileNo 手机号（中国大陆3大运营商）
-     * @return array
+     * @return PersonThreeElementsDetailResponse
      * @throws GuzzleException
      */
-    public function personThreeElementsDetail(string $name, string $idNo, string $mobileNo): array
+    public function personThreeElementsDetail(string $name, string $idNo, string $mobileNo): PersonThreeElementsDetailResponse
     {
-        return $this->post('/v2/identity/verify/individual/telecom3Factors/detail', [
+        return new PersonThreeElementsDetailResponse($this->post('/v2/identity/verify/individual/telecom3Factors/detail', [
             'name' => $name,
             'idNo' => $idNo,
             'mobileNo' => $mobileNo
-        ]);
+        ]));
     }
 
     /**
@@ -74,16 +88,16 @@ class Client extends BaseClient
      * @param string $name 姓名
      * @param string $idNo 身份证号（大陆二代身份证）
      * @param string $cardNo 银行卡号（银联卡号）
-     * @return array
+     * @return PersonBankCard3ElementsResponse
      * @throws GuzzleException
      */
-    public function personBankCard3Elements(string $name, string $idNo, string $cardNo): array
+    public function personBankCard3Elements(string $name, string $idNo, string $cardNo): PersonBankCard3ElementsResponse
     {
-        return $this->post('/v2/identity/verify/individual/bank3Factors', [
+        return new PersonBankCard3ElementsResponse($this->post('/v2/identity/verify/individual/bank3Factors', [
             'name' => $name,
             'idNo' => $idNo,
             'cardNo' => $cardNo
-        ]);
+        ]));
     }
 
     /**
@@ -92,16 +106,16 @@ class Client extends BaseClient
      * @param string $name 姓名
      * @param string $idNo 身份证号（大陆二代身份证）
      * @param string $cardNo 银行卡号（银联卡号）
-     * @return array
+     * @return PersonBankCard3ElementsDetailResponse
      * @throws GuzzleException
      */
-    public function personBankCard3ElementsDetail(string $name, string $idNo, string $cardNo): array
+    public function personBankCard3ElementsDetail(string $name, string $idNo, string $cardNo): PersonBankCard3ElementsDetailResponse
     {
-        return $this->post('/v2/identity/verify/individual/bank3Factors/detail', [
+        return new PersonBankCard3ElementsDetailResponse($this->post('/v2/identity/verify/individual/bank3Factors/detail', [
             'name' => $name,
             'idNo' => $idNo,
             'cardNo' => $cardNo
-        ]);
+        ]));
     }
 
     /**
@@ -111,17 +125,17 @@ class Client extends BaseClient
      * @param string $idNo 身份证号（大陆二代身份证）
      * @param string $cardNo 银行卡号（银联卡号）
      * @param string $mobileNo 手机号（中国大陆3大运营商）
-     * @return array
+     * @return PersonBankCard4ElementsResponse
      * @throws GuzzleException
      */
-    public function personBankCard4Elements(string $name, string $idNo, string $cardNo, string $mobileNo): array
+    public function personBankCard4Elements(string $name, string $idNo, string $cardNo, string $mobileNo): PersonBankCard4ElementsResponse
     {
-        return $this->post('/v2/identity/verify/individual/bank4Factors', [
+        return new PersonBankCard4ElementsResponse($this->post('/v2/identity/verify/individual/bank4Factors', [
             'name' => $name,
             'idNo' => $idNo,
             'cardNo' => $cardNo,
             'mobileNo' => $mobileNo
-        ]);
+        ]));
     }
 
     /**
@@ -131,17 +145,17 @@ class Client extends BaseClient
      * @param string $idNo 身份证号（大陆二代身份证）
      * @param string $cardNo 银行卡号（银联卡号）
      * @param string $mobileNo 手机号（中国大陆3大运营商）
-     * @return array
+     * @return PersonBankCard4ElementsDetailResponse
      * @throws GuzzleException
      */
-    public function personBankCard4ElementsDetail(string $name, string $idNo, string $cardNo, string $mobileNo): array
+    public function personBankCard4ElementsDetail(string $name, string $idNo, string $cardNo, string $mobileNo): PersonBankCard4ElementsDetailResponse
     {
-        return $this->post('/v2/identity/verify/individual/bank4Factors/detail', [
+        return new PersonBankCard4ElementsDetailResponse($this->post('/v2/identity/verify/individual/bank4Factors/detail', [
             'name' => $name,
             'idNo' => $idNo,
             'cardNo' => $cardNo,
             'mobileNo' => $mobileNo
-        ]);
+        ]));
     }
 
     /**
@@ -150,16 +164,16 @@ class Client extends BaseClient
      * @param string $name 姓名
      * @param string $idNo 身份证号
      * @param string $faceImgBase64 人像照片Base64编码，注：不包含格式前缀
-     * @return array
+     * @return PersonFaceCompareResponse
      * @throws GuzzleException
      */
-    public function personFaceCompare(string $name, string $idNo, string $faceImgBase64): array
+    public function personFaceCompare(string $name, string $idNo, string $faceImgBase64): PersonFaceCompareResponse
     {
-        return $this->post('/v2/identity/verify/individual/faceCompare/withoutSource', [
+        return new PersonFaceCompareResponse($this->post('/v2/identity/verify/individual/faceCompare/withoutSource', [
             'name' => $name,
             'idNo' => $idNo,
             'faceImgBase64' => $faceImgBase64,
-        ]);
+        ]));
     }
 
     /**
@@ -167,15 +181,15 @@ class Client extends BaseClient
      *
      * @param string $name 组织机构名称
      * @param string $orgCode 组织机构证件号,支持15位工商注册号或统一社会信用代码
-     * @return array
+     * @return Organization2ElementsResponse
      * @throws GuzzleException
      */
-    public function organization2Elements(string $name, string $orgCode): array
+    public function organization2Elements(string $name, string $orgCode): Organization2ElementsResponse
     {
-        return $this->post('/v2/identity/verify/organization/enterprise/base', [
+        return new Organization2ElementsResponse($this->post('/v2/identity/verify/organization/enterprise/base', [
             'name' => $name,
             'orgCode' => $orgCode
-        ]);
+        ]));
     }
 
     /**
@@ -186,16 +200,16 @@ class Client extends BaseClient
      *                          工商企业支持15位工商注册号或统一社会信用代码
      *                          非工商组织仅支持统一社会信用代码校验
      * @param string $legalRepName 组织法定代表人姓名
-     * @return array
+     * @return Organization3ElementsResponse
      * @throws GuzzleException
      */
-    public function organization3Elements(string $name, string $orgCode, string $legalRepName): array
+    public function organization3Elements(string $name, string $orgCode, string $legalRepName): Organization3ElementsResponse
     {
-        return $this->post('/v2/identity/verify/organization/verify', [
+        return new Organization3ElementsResponse($this->post('/v2/identity/verify/organization/verify', [
             'name' => $name,
             'orgCode' => $orgCode,
             'legalRepName' => $legalRepName
-        ]);
+        ]));
     }
 
     /**
@@ -205,16 +219,16 @@ class Client extends BaseClient
      * @param string $name
      * @param string $orgCode
      * @param string $legalRepName
-     * @return array
+     * @return Enterprise3ElementsResponse
      * @throws GuzzleException
      */
-    public function enterprise3Elements(string $name, string $orgCode, string $legalRepName): array
+    public function enterprise3Elements(string $name, string $orgCode, string $legalRepName): Enterprise3ElementsResponse
     {
-        return $this->post('/v2/identity/verify/organization/enterprise/bureau3Factors', [
+        return new Enterprise3ElementsResponse($this->post('/v2/identity/verify/organization/enterprise/bureau3Factors', [
             'name' => $name,
             'orgCode' => $orgCode,
             'legalRepName' => $legalRepName
-        ]);
+        ]));
     }
 
     /**
@@ -224,17 +238,17 @@ class Client extends BaseClient
      * @param string $orgCode
      * @param string $legalRepName
      * @param string $legalRepCertNo
-     * @return array
+     * @return Enterprise4ElementsResponse
      * @throws GuzzleException
      */
-    public function enterprise4Elements(string $name, string $orgCode, string $legalRepName, string $legalRepCertNo): array
+    public function enterprise4Elements(string $name, string $orgCode, string $legalRepName, string $legalRepCertNo): Enterprise4ElementsResponse
     {
-        return $this->post('/v2/identity/verify/organization/enterprise/bureau4Factors', [
+        return new Enterprise4ElementsResponse($this->post('/v2/identity/verify/organization/enterprise/bureau4Factors', [
             'name' => $name,
             'orgCode' => $orgCode,
             'legalRepName' => $legalRepName,
             'legalRepCertNo' => $legalRepCertNo
-        ]);
+        ]));
     }
 
     /**
@@ -243,16 +257,16 @@ class Client extends BaseClient
      * @param string $name
      * @param string $codeUSC
      * @param string $legalRepName
-     * @return array
+     * @return Lawyer3ElementsResponse
      * @throws GuzzleException
      */
-    public function lawyer3Elements(string $name, string $codeUSC, string $legalRepName): array
+    public function lawyer3Elements(string $name, string $codeUSC, string $legalRepName): Lawyer3ElementsResponse
     {
-        return $this->post('/v2/identity/verify/organization/lawFirm', [
+        return new Lawyer3ElementsResponse($this->post('/v2/identity/verify/organization/lawFirm', [
             'name' => $name,
             'codeUSC' => $codeUSC,
             'legalRepName' => $legalRepName
-        ]);
+        ]));
     }
 
     /**
@@ -261,15 +275,15 @@ class Client extends BaseClient
      * @param string $name
      * @param string $codeUSC
      * @param string $legalRepName
-     * @return array
+     * @return Social3ElementsResponse
      * @throws GuzzleException
      */
-    public function social3Elements(string $name, string $codeUSC, string $legalRepName): array
+    public function social3Elements(string $name, string $codeUSC, string $legalRepName): Social3ElementsResponse
     {
-        return $this->post('/v2/identity/verify/organization/social', [
+        return new Social3ElementsResponse($this->post('/v2/identity/verify/organization/social', [
             'name' => $name,
             'codeUSC' => $codeUSC,
             'legalRepName' => $legalRepName
-        ]);
+        ]));
     }
 }
