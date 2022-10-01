@@ -76,6 +76,7 @@ class EnterpriseTest extends TestCase
         $response = $this->client->detail('杭州XX信息科技有限公司');
         $this->assertInstanceOf(DetailResponse::class, $response);
         $this->assertTrue($response->isSuccess());
+        $this->assertSame('杭州XX信息科技有限公司', $response->getData()['name']);
 
         $response = $this->client->detail('杭州XX信息科技有限公司');
         $this->assertInstanceOf(DetailResponse::class, $response);

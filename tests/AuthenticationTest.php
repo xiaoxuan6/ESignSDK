@@ -82,17 +82,22 @@ class AuthenticationTest extends TestCase
                 Mockery::notAnyOf()
             )
             ->andReturn(
-                ["code" => 0,
+                [
+                    "code" => 0,
                     "message" => "成功",
-                    "data" => $data],
-                ["code" => 30500004,
-                    "message" => "认证流程不存在",]
+                    "data" => $data
+                ],
+                [
+                    "code" => 30500004,
+                    "message" => "认证流程不存在",
+                ]
             )
             ->twice();
 
-        $response = $this->client->authFlow('234');
+        $response = $this->client->authFlow('803719636976683872');
         $this->assertInstanceOf(AuthFlowResponse::class, $response);
         $this->assertTrue($response->isSuccess());
+        $this->assertSame('803719636976683872', $response->getData()['flowId']);
 
         $response = $this->client->authFlow('234');
         $this->assertInstanceOf(AuthFlowResponse::class, $response);
@@ -152,9 +157,10 @@ class AuthenticationTest extends TestCase
             )
             ->twice();
 
-        $response = $this->client->authFlowDetail('234');
+        $response = $this->client->authFlowDetail('1870616916160000000');
         $this->assertInstanceOf(AuthFlowDetailResponse::class, $response);
         $this->assertTrue($response->isSuccess());
+        $this->assertSame('803719636976683872', $response->getData()['flowId']);
 
         $response = $this->client->authFlowDetail('234');
         $this->assertInstanceOf(AuthFlowDetailResponse::class, $response);
