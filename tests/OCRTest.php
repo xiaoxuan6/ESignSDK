@@ -13,6 +13,7 @@ namespace Vinhson\EsignSdk\Tests;
 
 use Mockery;
 use Vinhson\EsignSdk\OCR\Client;
+use GuzzleHttp\Exception\GuzzleException;
 use Vinhson\EsignSdk\Response\OCR\{BankCardResponse,
     DrivingLicenceResponse,
     DrivingPermitResponse,
@@ -22,7 +23,7 @@ use Vinhson\EsignSdk\Response\OCR\{BankCardResponse,
 class OCRTest extends TestCase
 {
     /**
-     * @var Mockery\Mock
+     * @var Mockery\Mock | Client
      */
     protected $client;
 
@@ -32,6 +33,9 @@ class OCRTest extends TestCase
         $this->client = Mockery::mock(Client::class . '[post]', [$this->app])->shouldAllowMockingProtectedMethods();
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function testIdCard()
     {
         $data = [
@@ -79,6 +83,9 @@ class OCRTest extends TestCase
         $this->assertSame('身份证人像面识别失败', $response->getReason());
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function testBankCard()
     {
         $data = [
@@ -121,6 +128,9 @@ class OCRTest extends TestCase
         $this->assertSame('OCR识别失败', $response->getReason());
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function testLicense()
     {
         $data = [
@@ -169,6 +179,9 @@ class OCRTest extends TestCase
         $this->assertSame('OCR识别失败', $response->getReason());
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function testDrivingLicence()
     {
         $data = [
@@ -220,6 +233,9 @@ class OCRTest extends TestCase
         $this->assertSame('OCR识别失败', $response->getReason());
     }
 
+    /**
+     * @throws GuzzleException
+     */
     public function testDrivingPermit()
     {
         $data = [

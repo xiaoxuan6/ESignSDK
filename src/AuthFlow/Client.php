@@ -9,11 +9,11 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Vinhson\EsignSdk\Authentication;
+namespace Vinhson\EsignSdk\AuthFlow;
 
 use Vinhson\EsignSdk\Kernel\BaseClient;
 use GuzzleHttp\Exception\GuzzleException;
-use Vinhson\EsignSdk\Response\Authentication\{AuthFlowDetailResponse, AuthFlowResponse};
+use Vinhson\EsignSdk\Response\AuthFlow\{AuthFlowDetailResponse, AuthFlowResponse};
 
 class Client extends BaseClient
 {

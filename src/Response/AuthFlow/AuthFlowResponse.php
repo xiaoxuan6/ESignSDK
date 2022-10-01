@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Vinhson\EsignSdk\Response\Authentication;
+namespace Vinhson\EsignSdk\Response\AuthFlow;
 
 use Vinhson\EsignSdk\Response\Response;
 

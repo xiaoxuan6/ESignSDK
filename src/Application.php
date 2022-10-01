@@ -20,7 +20,7 @@ use Vinhson\EsignSdk\Kernel\ServiceContainer;
  * @property OCR\Client $ocr ocr识别能力
  * @property Enterprise\Client $enterprise 信息查询
  * @property Info\Client $info 信息对比能力
- * @property Authentication\Client $auth 认证流程查询
+ * @property AuthFlow\Client $auth 认证流程查询
  */
 class Application extends ServiceContainer
 {
@@ -28,6 +28,6 @@ class Application extends ServiceContainer
         OCR\ServiceProvider::class,
         Enterprise\ServiceProvider::class,
         Info\ServiceProvider::class,
-        Authentication\ServiceProvider::class
+        AuthFlow\ServiceProvider::class
     ];
 }

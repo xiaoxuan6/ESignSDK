@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Vinhson\EsignSdk\Authentication;
+namespace Vinhson\EsignSdk\AuthFlow;
 
 use Pimple\{Container, ServiceProviderInterface};
 
