@@ -26,7 +26,7 @@ class Client extends BaseClient
      */
     public function detail(string $keyword): DetailResponse
     {
-        return new DetailResponse($this->post('：/v2/identity/auth/api/meta/enterprise/detail', [
+        return new DetailResponse($this->post('/v2/identity/auth/api/meta/enterprise/detail', [
             'keyword' => $keyword
         ]));
     }
