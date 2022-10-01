@@ -13,27 +13,25 @@ namespace Vinhson\EsignSdk\Tests;
 
 use Mockery;
 use Vinhson\EsignSdk\OCR\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Vinhson\EsignSdk\Response\OCR\{BankCardResponse,
     DrivingLicenceResponse,
     DrivingPermitResponse,
     IdCardResponse,
-    LicenseResponse
-};
+    LicenseResponse};
 
 class OCRTest extends TestCase
 {
+    /**
+     * @var Mockery\Mock
+     */
     protected $client;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->client = Mockery::mock(Client::class, [$this->app]);
+        $this->client = Mockery::mock(Client::class . '[post]', [$this->app])->shouldAllowMockingProtectedMethods();
     }
 
-    /**
-     * @throws GuzzleException
-     */
     public function testIdCard()
     {
         $data = [
@@ -48,17 +46,25 @@ class OCRTest extends TestCase
             "issuedBy" => "XXX公安局"
         ];
 
-        $this->client->shouldReceive('idCard')
+        $this->client->shouldReceive('post')
+            ->with(
+                Mockery::on(function ($api) {
+                    return $api == '/v2/identity/auth/api/ocr/idcard';
+                }),
+                Mockery::on(function ($params) {
+                    return is_array($params) && ! empty($params);
+                })
+            )
             ->andReturn(
-                new IdCardResponse([
+                [
                     "code" => 0,
                     "message" => "成功",
                     "data" => $data
-                ]),
-                new IdCardResponse([
+                ],
+                [
                     "code" => 30503129,
                     "message" => "身份证人像面识别失败",
-                ])
+                ]
             )
             ->twice();
 
@@ -67,15 +73,12 @@ class OCRTest extends TestCase
         $this->assertTrue($response->isSuccess());
         $this->checkData($data, $response);
 
-        $response = $this->client->idCard('222', '');
+        $response = $this->client->idCard('', '222');
         $this->assertInstanceOf(IdCardResponse::class, $response);
         $this->assertFalse($response->isSuccess());
         $this->assertSame('身份证人像面识别失败', $response->getReason());
     }
 
-    /**
-     * @throws GuzzleException
-     */
     public function testBankCard()
     {
         $data = [
@@ -85,17 +88,25 @@ class OCRTest extends TestCase
             "bankCardType" => "借记卡"
         ];
 
-        $this->client->shouldReceive('bankCard')
+        $this->client->shouldReceive('post')
+            ->with(
+                Mockery::on(function ($api) {
+                    return $api == '/v2/identity/auth/api/ocr/bankcard';
+                }),
+                Mockery::on(function ($params) {
+                    return array_key_exists('img', $params) && ! empty($params['img']);
+                })
+            )
             ->andReturn(
-                new BankCardResponse([
+                [
                     "code" => 0,
                     "message" => "成功",
                     "data" => $data
-                ]),
-                new BankCardResponse([
+                ],
+                [
                     "code" => 30503127,
                     "message" => "OCR识别失败",
-                ])
+                ]
             )
             ->twice();
 
@@ -110,9 +121,6 @@ class OCRTest extends TestCase
         $this->assertSame('OCR识别失败', $response->getReason());
     }
 
-    /**
-     * @throws GuzzleException
-     */
     public function testLicense()
     {
         $data = [
@@ -128,17 +136,25 @@ class OCRTest extends TestCase
             "scope" => "网上贸易代理......"
         ];
 
-        $this->client->shouldReceive('license')
+        $this->client->shouldReceive('post')
+            ->with(
+                Mockery::on(function ($api) {
+                    return $api == '/v2/identity/auth/api/ocr/license';
+                }),
+                Mockery::on(function ($params) {
+                    return array_key_exists('img', $params) && ! empty($params);
+                })
+            )
             ->andReturn(
-                new LicenseResponse([
+                [
                     "code" => 0,
                     "message" => "成功",
                     "data" => $data
-                ]),
-                new LicenseResponse([
+                ],
+                [
                     "code" => 30503127,
                     "message" => "OCR识别失败",
-                ])
+                ]
             )
             ->twice();
 
@@ -153,9 +169,6 @@ class OCRTest extends TestCase
         $this->assertSame('OCR识别失败', $response->getReason());
     }
 
-    /**
-     * @throws GuzzleException
-     */
     public function testDrivingLicence()
     {
         $data = [
@@ -174,17 +187,25 @@ class OCRTest extends TestCase
             "record" => ""
         ];
 
-        $this->client->shouldReceive('drivingLicence')
+        $this->client->shouldReceive('post')
+            ->with(
+                Mockery::on(function ($api) {
+                    return $api == '/v2/identity/auth/api/ocr/drivinglicence';
+                }),
+                Mockery::on(function ($params) {
+                    return array_key_exists('image', $params) && array_key_exists('backImage', $params) && ! empty($params['image']) && ! empty($params['backImage']);
+                })
+            )
             ->andReturn(
-                new DrivingLicenceResponse([
+                [
                     "code" => 0,
                     "message" => "成功",
                     "data" => $data
-                ]),
-                new DrivingLicenceResponse([
+                ],
+                [
                     "code" => 30503127,
                     "message" => "OCR识别失败",
-                ])
+                ]
             )
             ->twice();
 
@@ -199,9 +220,6 @@ class OCRTest extends TestCase
         $this->assertSame('OCR识别失败', $response->getReason());
     }
 
-    /**
-     * @throws GuzzleException
-     */
     public function testDrivingPermit()
     {
         $data = [
@@ -228,17 +246,25 @@ class OCRTest extends TestCase
             "codeNumber" => "*233XXXXXXX22*"
         ];
 
-        $this->client->shouldReceive('drivingPermit')
+        $this->client->shouldReceive('post')
+            ->with(
+                Mockery::on(function ($api) {
+                    return $api == '/v2/identity/auth/api/ocr/drivingPermit';
+                }),
+                Mockery::on(function ($params) {
+                    return array_key_exists('image', $params) && array_key_exists('backImage', $params) && ! empty($params['image']) && ! empty($params['backImage']);
+                })
+            )
             ->andReturn(
-                new DrivingPermitResponse([
+                [
                     "code" => 0,
                     "message" => "成功",
                     "data" => $data
-                ]),
-                new DrivingPermitResponse([
+                ],
+                [
                     "code" => 30503127,
                     "message" => "OCR识别失败",
-                ])
+                ]
             )
             ->twice();
 

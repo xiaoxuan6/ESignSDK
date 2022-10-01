@@ -23,6 +23,7 @@
         "mockery/mockery": "^1.5"
     },
     "require": {
+        "php": ">=7.1",
         "pimple/pimple": "^3.5",
         "guzzlehttp/guzzle": "^7.5",
         "ext-json": "*"
