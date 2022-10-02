@@ -14,7 +14,7 @@ namespace Vinhson\EsignSdk\Kernel;
 use GuzzleHttp\Client;
 use Vinhson\EsignSdk\Application;
 use GuzzleHttp\Exception\GuzzleException;
-use Vinhson\EsignSdk\Kernel\Support\Traits\SignatureTrait;
+use Vinhson\EsignSdk\Kernel\Traits\SignatureTrait;
 
 class BaseClient
 {
@@ -64,6 +64,17 @@ class BaseClient
     public function post($url, array $params = []): array
     {
         return $this->request($url, 'POST', ['json' => $params]);
+    }
+
+    /**
+     * @param $url
+     * @param array $params
+     * @return array
+     * @throws GuzzleException
+     */
+    public function put($url, array $params = []): array
+    {
+        return $this->request($url, 'PUT', ['json' => $params]);
     }
 
     /**

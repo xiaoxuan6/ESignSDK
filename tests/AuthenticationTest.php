@@ -160,7 +160,7 @@ class AuthenticationTest extends TestCase
         $response = $this->client->authFlowDetail('1870616916160000000');
         $this->assertInstanceOf(AuthFlowDetailResponse::class, $response);
         $this->assertTrue($response->isSuccess());
-        $this->assertSame('803719636976683872', $response->getData()['flowId']);
+        $this->assertSame('1870616916160000000', $response->getData()['flowId']);
 
         $response = $this->client->authFlowDetail('234');
         $this->assertInstanceOf(AuthFlowDetailResponse::class, $response);

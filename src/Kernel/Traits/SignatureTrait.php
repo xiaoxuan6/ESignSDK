@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Vinhson\EsignSdk\Kernel\Support\Traits;
+namespace Vinhson\EsignSdk\Kernel\Traits;
 
 trait SignatureTrait
 {

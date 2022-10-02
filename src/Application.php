@@ -21,6 +21,7 @@ use Vinhson\EsignSdk\Kernel\ServiceContainer;
  * @property Enterprise\Client $enterprise 信息查询
  * @property Info\Client $info 信息对比能力
  * @property AuthFlow\Client $auth 认证流程查询
+ * @property Account\Client $account 用户认证服务
  */
 class Application extends ServiceContainer
 {
@@ -28,6 +29,7 @@ class Application extends ServiceContainer
         OCR\ServiceProvider::class,
         Enterprise\ServiceProvider::class,
         Info\ServiceProvider::class,
-        AuthFlow\ServiceProvider::class
+        AuthFlow\ServiceProvider::class,
+        Account\ServiceProvider::class
     ];
 }
