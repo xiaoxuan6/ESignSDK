@@ -11,37 +11,36 @@
 
 namespace Vinhson\EsignSdk\Kernel;
 
-use GuzzleHttp\Client;
 use Vinhson\EsignSdk\Application;
 use GuzzleHttp\Exception\GuzzleException;
-use Vinhson\EsignSdk\Kernel\Traits\SignatureTrait;
 
 class BaseClient
 {
-    use SignatureTrait;
-
-    public const URI = [
-        'local' => 'https://smlopenapi.esign.cn',
-        'prod' => 'https://openapi.esign.cn',
-    ];
-
     /**
      * @var Application
      */
     public $app;
 
     /**
-     * @var mixed|string
+     * @var Http
      */
-    protected $mode;
-
-    public $baseUri = '';
+    public $http;
 
     public function __construct(ServiceContainer $app)
     {
         $this->app = $app;
-        $this->mode = $app->config['mode'] ?? 'local';
-        $this->baseUri = self::URI[$this->mode] ?? '';
+        $this->_initHttp($this->app->config['client'] ?? []);
+    }
+
+    /**
+     * @param array $options
+     * @return void
+     */
+    private function _initHttp(array $options = []): void
+    {
+        if (! $this->http) {
+            $this->http = new Http($this->app->config['app_id'] ?? '', $this->app->config['app_key'] ?? '', $options);
+        }
     }
 
     /**
@@ -52,7 +51,7 @@ class BaseClient
      */
     public function get($url, array $query = []): array
     {
-        return $this->request($url, 'GET', ['query' => $query]);
+        return $this->http->request($url, 'GET', ['query' => $query]);
     }
 
     /**
@@ -63,7 +62,7 @@ class BaseClient
      */
     public function post($url, array $params = []): array
     {
-        return $this->request($url, 'POST', ['json' => $params]);
+        return $this->http->request($url, 'POST', ['json' => $params]);
     }
 
     /**
@@ -74,62 +73,6 @@ class BaseClient
      */
     public function put($url, array $params = []): array
     {
-        return $this->request($url, 'PUT', ['json' => $params]);
-    }
-
-    /**
-     * @param $url
-     * @param $method
-     * @param array $options
-     * @return array
-     * @throws GuzzleException
-     */
-    public function request($url, $method, array $options = []): array
-    {
-        $options = $this->formatOptions($url, $method, $options);
-
-        $url = sprintf('%s%s', $this->baseUri, '/' . ltrim($url, '/'));
-
-        $verify = $this->app->config['verify'] ?? true;
-        $response = (new Client(['verify' => $verify]))->request($method, $url, $options);
-
-        return json_decode($response->getBody()->getContents(), JSON_UNESCAPED_UNICODE);
-    }
-
-    /**
-     * @param $url
-     * @param $method
-     * @param array $options
-     * @return array
-     */
-    private function getHeaders($url, $method, array $options = []): array
-    {
-        $options = $options['query'] ?? ($options['json'] ?? []);
-        $contentMd5 = self::getContentMd5($options);
-
-        return [
-            'X-Tsign-Open-App-Id' => $this->app->config['app_id'] ?? '',
-            'Content-Type' => 'application/json;charset=UTF-8',
-            'X-Tsign-Open-Ca-Timestamp' => self::getMillisecond(),
-            'Accept' => '*/*',
-            'X-Tsign-Open-Ca-Signature' => self::sign($url, $method, $contentMd5, $this->app->config['app_key'] ?? ''),
-            'X-Tsign-Open-Auth-Mode' => 'Signature',
-            'Content-MD5' => $contentMd5,
-        ];
-    }
-
-    /**
-     * @param $url
-     * @param $method
-     * @param array $options
-     * @return array
-     */
-    private function formatOptions($url, $method, array $options = []): array
-    {
-        if (! isset($options['headers']) || empty($options['headers'])) {
-            $options['headers'] = $this->getHeaders($url, $method, $options);
-        }
-
-        return $options;
+        return $this->http->request($url, 'PUT', ['json' => $params]);
     }
 }
