@@ -15,7 +15,13 @@ $config = [
         'base_uri' => 'https://smlopenapi.esign.cn',
         'verify' => false,
         'timeout' => 10,
-        'log' => true // 是否输出请求和响应数据
+
+        /**
+        * 日志配置信息
+        */
+        'log' => true // 是否记录请求和响应数据
+        'log_path' => __DIR__ . '/../access.log',
+        'log_max' => 7 // 日志保留天数
     ]
 ];
 
