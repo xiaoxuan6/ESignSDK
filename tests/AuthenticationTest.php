@@ -26,7 +26,7 @@ class AuthenticationTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->client = Mockery::mock(Client::class . '[request]', [$this->app])->shouldAllowMockingProtectedMethods();
+        $this->client = Mockery::mock(Client::class . '[get]', [$this->app])->shouldAllowMockingProtectedMethods();
     }
 
     /**
@@ -73,13 +73,11 @@ class AuthenticationTest extends TestCase
             ],
         ];
 
-        $this->client->shouldReceive('request')
+        $this->client->shouldReceive('get')
             ->with(
                 Mockery::on(function ($api) {
                     return str_contains($api, '/v2/identity/auth/api/common/') && str_contains($api, '/outline');
-                }),
-                'GET',
-                Mockery::notAnyOf()
+                })
             )
             ->andReturn(
                 [
@@ -136,13 +134,11 @@ class AuthenticationTest extends TestCase
             ]
         ];
 
-        $this->client->shouldReceive('request')
+        $this->client->shouldReceive('get')
             ->with(
                 Mockery::on(function ($api) {
                     return str_contains($api, '/v2/identity/auth/api/common/') && str_contains($api, '/detail');
-                }),
-                'GET',
-                Mockery::notAnyOf()
+                })
             )
             ->andReturn(
                 [

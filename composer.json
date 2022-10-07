@@ -27,5 +27,9 @@
         "pimple/pimple": "^3.5",
         "guzzlehttp/guzzle": "^7.5",
         "ext-json": "*"
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "fix": "vendor/bin/php-cs-fixer fix --ansi"
     }
 }

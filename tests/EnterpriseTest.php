@@ -26,7 +26,7 @@ class EnterpriseTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->client = Mockery::mock(Client::class . '[request]', [$this->app])->shouldAllowMockingProtectedMethods();
+        $this->client = Mockery::mock(Client::class . '[post]', [$this->app])->shouldAllowMockingProtectedMethods();
     }
 
     /**
@@ -50,14 +50,13 @@ class EnterpriseTest extends TestCase
             "codeREG" => "33010XXXX3512",
             "codeORG" => "74XXX0607"
         ];
-        $this->client->shouldReceive('request')
+        $this->client->shouldReceive('post')
             ->with(
                 Mockery::on(function ($api) {
                     return $api == '/v2/identity/auth/api/meta/enterprise/detail';
                 }),
-                'POST',
                 Mockery::on(function ($params) {
-                    return array_key_exists('keyword', $params['json']) && ! empty($params['json']['keyword']);
+                    return array_key_exists('keyword', $params) && ! empty($params['keyword']);
                 })
             )
             ->andReturn(

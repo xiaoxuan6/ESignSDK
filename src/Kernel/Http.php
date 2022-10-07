@@ -12,7 +12,7 @@
 namespace Vinhson\EsignSdk\Kernel;
 
 use Vinhson\EsignSdk\Kernel\Traits\SignatureTrait;
-use GuzzleHttp\{Client, Exception\GuzzleException, HandlerStack};
+use GuzzleHttp\{Client, Exception\GuzzleException, HandlerStack, Middleware, Psr7\Request, Psr7\Response};
 
 class Http
 {
@@ -49,6 +49,10 @@ class Http
         $this->options['verify'] = $options['verify'] ?? true;
         $this->options['timeout'] = $options['timeout'] ?? 5;
         $this->options['base_uri'] = $options['base_uri'] ?? '';
+
+        if ($options['log'] ?? false) {
+            $this->tapMiddleware();
+        }
     }
 
     /**
@@ -184,4 +188,18 @@ class Http
         return $this->handlerStack;
     }
 
+    private function tapMiddleware()
+    {
+        $tap = Middleware::tap(function (Request $request, $options) {
+            echo "[请求参数] url:{$request->getUri()} method:{$request->getMethod()} params:{$request->getBody()->getContents()}" . PHP_EOL;
+        }, function (Request $request, $options, $response) {
+            if (! $response instanceof Response) {
+                $response = $response->wait(true);
+            }
+            $response = $response->getBody()->getContents();
+            echo "[响应参数] response:{$response}";
+        });
+
+        $this->putMiddleware('tap', $tap);
+    }
 }

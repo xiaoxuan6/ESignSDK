@@ -34,7 +34,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
                 'base_uri' => 'https://smlopenapi.esign.cn',
                 'verify' => false,
                 'timeout' => 10,
-//                'log' => true
+                'log' => true
                 // 'local' => 'https://smlopenapi.esign.cn',
                 // 'prod' => 'https://openapi.esign.cn',
             ]
@@ -58,12 +58,12 @@ class TestCase extends \PHPUnit\Framework\TestCase
     /**
      * @throws GuzzleException
      */
-    public function testIdCard()
-    {
-        $this->assertTrue(true);
-
-        $this->app = new Application($this->config);
-
-        var_export($this->app->ocr->idCard('xxxx', ''));
-    }
+//    public function testIdCard()
+//    {
+//        $this->assertTrue(true);
+//
+//        $this->app = new Application($this->config);
+//
+//        var_export($this->app->ocr->idCard('xxxx', ''));
+//    }
 }

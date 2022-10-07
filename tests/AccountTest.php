@@ -25,17 +25,13 @@ class AccountTest extends TestCase
      */
     protected $client;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->client = Mockery::mock(Client::class . '[request]', [$this->app])->shouldAllowMockingProtectedMethods();
-    }
-
     /**
      * @throws GuzzleException
      */
     public function testPersonAccountCreate()
     {
+        $this->client = Mockery::mock(Client::class . '[post]', [$this->app])->shouldAllowMockingProtectedMethods();
+
         $expected = [
             'name' => 'vinhson',
             'mobile' => '18888888888',
@@ -49,17 +45,16 @@ class AccountTest extends TestCase
             "accountId" => "1eaf205d5d6d4e579a9d221d775xxx"
         ];
 
-        $this->client->shouldReceive('request')
+        $this->client->shouldReceive('post')
             ->with(
                 Mockery::on(function ($api) {
                     return $api == '/v1/accounts/createByThirdPartyUserId';
                 }),
-                'POST',
                 Mockery::on(function ($params) use ($expected) {
-                    ksort($params['json']);
+                    ksort($params);
                     ksort($expected);
 
-                    return $expected == $params['json'];
+                    return $expected == $params;
                 })
             )
             ->andReturn(
@@ -91,18 +86,17 @@ class AccountTest extends TestCase
      */
     public function testPersonAccountModify()
     {
+        $this->client = Mockery::mock(Client::class . '[put]', [$this->app])->shouldAllowMockingProtectedMethods();
+
         $name = 'vinhson';
         $accountId = '1eaf205d5d6d4e579a9d221d775xxxx';
 
-        $this->client->shouldReceive('request')
+        $this->client->shouldReceive('put')
             ->with(
                 Mockery::on(function ($api) use ($accountId) {
                     return $api == "/v1/accounts/{$accountId}";
                 }),
-                'PUT',
-                Mockery::on(function ($params) use ($name) {
-                    return $params['json']['name'] == $name;
-                })
+                Mockery::any()
             )
             ->andReturn(
                 [
