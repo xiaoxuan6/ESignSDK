@@ -31,12 +31,18 @@ class TestCase extends \PHPUnit\Framework\TestCase
             'app_id' => 'xxx',
             'app_key' => 'xxx',
             'client' => [
+                // 测试 'https://smlopenapi.esign.cn',
+                // 正式 'https://openapi.esign.cn',
                 'base_uri' => 'https://smlopenapi.esign.cn',
                 'verify' => false,
                 'timeout' => 10,
-                'log' => true
-                // 'local' => 'https://smlopenapi.esign.cn',
-                // 'prod' => 'https://openapi.esign.cn',
+
+                /**
+                 * 日志配置信息
+                 */
+                'log' => true,
+                'log_path' => __DIR__ . '/../access.log',
+                'log_max' => 7 // 日志保留天数
             ]
         ];
 

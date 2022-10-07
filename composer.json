@@ -31,5 +31,8 @@
     "scripts": {
         "test": "vendor/bin/phpunit",
         "fix": "vendor/bin/php-cs-fixer fix --ansi"
+    },
+    "suggest": {
+        "monolog/monolog": "Required to use the log."
     }
 }

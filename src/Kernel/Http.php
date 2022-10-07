@@ -11,7 +11,10 @@
 
 namespace Vinhson\EsignSdk\Kernel;
 
+use Monolog\Logger;
+use Monolog\Handler\{RotatingFileHandler};
 use Vinhson\EsignSdk\Kernel\Traits\SignatureTrait;
+use Vinhson\EsignSdk\Kernel\Exception\{InvalidClassException, InvalidFileException};
 use GuzzleHttp\{Client, Exception\GuzzleException, HandlerStack, Middleware, Psr7\Request, Psr7\Response};
 
 class Http
@@ -41,6 +44,11 @@ class Http
      */
     private $handlerStack = null;
 
+    /**
+     * @var Logger
+     */
+    private $log;
+
     public function __construct(string $app_id, string $app_key, array $options = [])
     {
         $this->app_id = $app_id;
@@ -51,6 +59,11 @@ class Http
         $this->options['base_uri'] = $options['base_uri'] ?? '';
 
         if ($options['log'] ?? false) {
+            $logPath = $options['log_path'] ?? '';
+
+            $this->assertLog();
+            $this->assertFile($logPath);
+            $this->createLogger($logPath, $options['log_max'] ?? 7);
             $this->tapMiddleware();
         }
     }
@@ -188,18 +201,56 @@ class Http
         return $this->handlerStack;
     }
 
+    /**
+     * log middleware
+     */
     private function tapMiddleware()
     {
-        $tap = Middleware::tap(function (Request $request, $options) {
-            echo "[请求参数] url:{$request->getUri()} method:{$request->getMethod()} params:{$request->getBody()->getContents()}" . PHP_EOL;
-        }, function (Request $request, $options, $response) {
-            if (! $response instanceof Response) {
-                $response = $response->wait(true);
+        $log = $this->log;
+        $tap = Middleware::tap(
+            function (Request $request, $options) use ($log) {
+                $response = json_decode($request->getBody()->getContents(), JSON_UNESCAPED_UNICODE);
+                $log->info("[请求参数] url:{$request->getUri()} method:{$request->getMethod()}", $response);
+            },
+            function (Request $request, $options, $response) use ($log) {
+                if (! $response instanceof Response) {
+                    $response = $response->wait(true);
+                }
+                $status = $response->getStatusCode();
+                $response = $response->getBody()->getContents();
+                $log->info("[响应参数] code:{$status}", json_decode($response, JSON_UNESCAPED_UNICODE));
             }
-            $response = $response->getBody()->getContents();
-            echo "[响应参数] response:{$response}";
-        });
+        );
 
         $this->putMiddleware('tap', $tap);
+    }
+
+    private function assertLog()
+    {
+        $class = "Monolog\\Logger";
+
+        if (! class_exists($class)) {
+            throw new InvalidClassException("Class {$class} not exists!");
+        }
+    }
+
+    /**
+     * @param string $logPath
+     */
+    private function assertFile(string $logPath)
+    {
+        if (! $logPath) {
+            throw new InvalidFileException("Log path is an invalid file");
+        }
+    }
+
+    /**
+     * @param string $logPath
+     * @param $logMax
+     */
+    private function createLogger(string $logPath, $logMax)
+    {
+        $this->log = new Logger('log');
+        $this->log->pushHandler(new RotatingFileHandler($logPath, $logMax));
     }
 }
