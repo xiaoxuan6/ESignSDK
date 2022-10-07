@@ -134,9 +134,32 @@ class Http
      * @param callable $middleware
      * @return $this
      */
-    protected function addMiddleware(string $name, callable $middleware): Http
+    protected function putMiddleware(string $name, callable $middleware): Http
     {
-        $this->middlewares[$name] = $middleware;
+        if (empty($name)) {
+            array_push($this->middlewares, $middleware);
+        } else {
+            $this->middlewares[$name] = $middleware;
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMiddlewares(): array
+    {
+        return $this->middlewares;
+    }
+
+    /**
+     * @param HandlerStack $handlerStack
+     * @return $this
+     */
+    public function setHandlerStack(HandlerStack $handlerStack): Http
+    {
+        $this->handlerStack = $handlerStack;
 
         return $this;
     }
@@ -150,25 +173,15 @@ class Http
             return $this->handlerStack;
         }
 
-        $stack = HandlerStack::create();
+        $this->handlerStack = HandlerStack::create();
+
         if ($this->middlewares) {
             foreach ($this->middlewares as $name => $middleware) {
-                $stack->push($middleware, $name);
+                $this->handlerStack->push($middleware, $name);
             }
         }
-
-        $this->handlerStack = $stack;
 
         return $this->handlerStack;
     }
 
-//    private function logMiddleware()
-//    {
-//        $class = 'Monolog\Logger';
-//        if (! class_exists($class)) {
-//            throw new InvalidArgumentException("Class {$class} not exists!");
-//        }
-//
-//        $this->addMiddleware('log', Middleware::log((new Logger('Logger')), new MessageFormatter('{request} - {response}')));
-//    }
 }
