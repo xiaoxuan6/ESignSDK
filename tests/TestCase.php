@@ -64,12 +64,12 @@ class TestCase extends \PHPUnit\Framework\TestCase
     /**
      * @throws GuzzleException
      */
-//    public function testIdCard()
-//    {
-//        $this->assertTrue(true);
-//
-//        $this->app = new Application($this->config);
-//
-//        var_export($this->app->ocr->idCard('xxxx', ''));
-//    }
+    public function testIdCard()
+    {
+        $this->assertTrue(true);
+
+        $this->app = new Application($this->config);
+
+        var_export($this->app->ocr->idCard('xxxx', ''));
+    }
 }

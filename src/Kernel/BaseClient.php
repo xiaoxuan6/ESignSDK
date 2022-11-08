@@ -13,6 +13,7 @@ namespace Vinhson\EsignSdk\Kernel;
 
 use Vinhson\EsignSdk\Application;
 use GuzzleHttp\Exception\GuzzleException;
+use Vinhson\EsignSdk\Kernel\Contracts\HttpInterface;
 
 class BaseClient
 {
@@ -29,18 +30,14 @@ class BaseClient
     public function __construct(ServiceContainer $app)
     {
         $this->app = $app;
-        $this->_initHttp($this->app->config['client'] ?? []);
+        $this->http = $this->app['http'];
     }
 
-    /**
-     * @param array $options
-     * @return void
-     */
-    private function _initHttp(array $options = []): void
+    public function setHttp(HttpInterface $http): BaseClient
     {
-        if (! $this->http) {
-            $this->http = new Http($this->app->config['app_id'] ?? '', $this->app->config['app_key'] ?? '', $options);
-        }
+        $this->http = $http;
+
+        return $this;
     }
 
     /**

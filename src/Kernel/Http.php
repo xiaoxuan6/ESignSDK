@@ -12,12 +12,14 @@
 namespace Vinhson\EsignSdk\Kernel;
 
 use Monolog\Logger;
+use Vinhson\EsignSdk\Application;
 use Monolog\Handler\{RotatingFileHandler};
 use Vinhson\EsignSdk\Kernel\Traits\SignatureTrait;
+use Vinhson\EsignSdk\Kernel\Contracts\HttpInterface;
 use Vinhson\EsignSdk\Kernel\Exception\{InvalidClassException, InvalidFileException};
 use GuzzleHttp\{Client, Exception\GuzzleException, HandlerStack, Middleware, Psr7\Request, Psr7\Response};
 
-class Http
+class Http implements HttpInterface
 {
     use SignatureTrait;
 
@@ -49,23 +51,38 @@ class Http
      */
     private $log;
 
-    public function __construct(string $app_id, string $app_key, array $options = [])
+    public function __construct(Application $app)
     {
-        $this->app_id = $app_id;
-        $this->app_key = $app_key;
+        $options = $app->config;
+        $this->app_id = $options['app_id'];
+        $this->app_key = $options['app_key'];
 
-        $this->options['verify'] = $options['verify'] ?? true;
-        $this->options['timeout'] = $options['timeout'] ?? 5;
-        $this->options['base_uri'] = $options['base_uri'] ?? '';
+        $client = $options['client'];
+        $this->options['verify'] = $client['verify'] ?? true;
+        $this->options['timeout'] = $client['timeout'] ?? 5;
+        $this->options['base_uri'] = $client['base_uri'] ?? '';
 
-        if ($options['log'] ?? false) {
-            $logPath = $options['log_path'] ?? '';
-
-            $this->assertLog();
-            $this->assertFile($logPath);
-            $this->createLogger($logPath, $options['log_max'] ?? 7);
-            $this->tapMiddleware();
+        if ($client['log'] ?? false) {
+            $this->setLogDriver($client);
         }
+    }
+
+    protected function setLogDriver(array $client)
+    {
+        $logPath = $client['log_path'] ?? '';
+
+        $class = "Monolog\\Logger";
+
+        if (! class_exists($class)) {
+            throw new InvalidClassException("Class {$class} not exists!");
+        }
+
+        if (! $logPath) {
+            throw new InvalidFileException("Log path is an invalid file");
+        }
+
+        $this->createLogger($logPath, $client['log_max'] ?? 7);
+        $this->tapMiddleware();
     }
 
     /**
@@ -108,7 +125,7 @@ class Http
 
         $response = $this->getClient($this->getHandler())->request($method, $url, $options);
 
-        return json_decode($response->getBody()->getContents(), JSON_UNESCAPED_UNICODE);
+        return json_decode($response->getBody()->getContents(), JSON_UNESCAPED_UNICODE) ?? [];
     }
 
     /**
@@ -223,25 +240,6 @@ class Http
         );
 
         $this->putMiddleware('tap', $tap);
-    }
-
-    private function assertLog()
-    {
-        $class = "Monolog\\Logger";
-
-        if (! class_exists($class)) {
-            throw new InvalidClassException("Class {$class} not exists!");
-        }
-    }
-
-    /**
-     * @param string $logPath
-     */
-    private function assertFile(string $logPath)
-    {
-        if (! $logPath) {
-            throw new InvalidFileException("Log path is an invalid file");
-        }
     }
 
     /**
