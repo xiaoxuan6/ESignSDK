@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of esign sdk.
+ * This file is part of james.xue/esign-sdk.
  *
  * (c) vinhson <15227736751@qq.com>
  *
@@ -11,8 +11,8 @@
 
 namespace Vinhson\EsignSdk\Kernel\Providers;
 
-use Pimple\{Container, ServiceProviderInterface};
 use Vinhson\EsignSdk\Kernel\Logger;
+use Pimple\{Container, ServiceProviderInterface};
 
 class LoggerServerProvider implements ServiceProviderInterface
 {

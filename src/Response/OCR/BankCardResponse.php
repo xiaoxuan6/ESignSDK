@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of esign sdk.
+ * This file is part of james.xue/esign-sdk.
  *
  * (c) vinhson <15227736751@qq.com>
  *

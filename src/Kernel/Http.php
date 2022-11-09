@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of esign sdk.
+ * This file is part of james.xue/esign-sdk.
  *
  * (c) vinhson <15227736751@qq.com>
  *
@@ -11,10 +11,10 @@
 
 namespace Vinhson\EsignSdk\Kernel;
 
-use GuzzleHttp\{Client, Exception\GuzzleException, HandlerStack, Middleware, Psr7\Request, Psr7\Response};
 use Vinhson\EsignSdk\Application;
-use Vinhson\EsignSdk\Kernel\Contracts\HttpInterface;
 use Vinhson\EsignSdk\Kernel\Traits\SignatureTrait;
+use Vinhson\EsignSdk\Kernel\Contracts\HttpInterface;
+use GuzzleHttp\{Client, Exception\GuzzleException, HandlerStack, Middleware, Psr7\Request, Psr7\Response};
 
 class Http implements HttpInterface
 {
@@ -25,8 +25,10 @@ class Http implements HttpInterface
      */
     public $app;
 
-    private $app_id;
-    private $app_key;
+    /**
+     * @var array
+     */
+    private $config;
 
     /**
      * @var array
@@ -52,8 +54,7 @@ class Http implements HttpInterface
     {
         $this->app = $app;
         $options = $app->config;
-        $this->app_id = $options['app_id'];
-        $this->app_key = $options['app_key'];
+        $this->config = $options;
 
         $client = $options['client'];
         $this->options['verify'] = $client['verify'] ?? true;
@@ -85,9 +86,9 @@ class Http implements HttpInterface
         $option = $handler ? ['handler' => $handler] : [];
 
         return $this->client ?? $this->client = new Client(array_merge(
-                $this->options,
-                $option
-            ));
+            $this->options,
+            $option
+        ));
     }
 
     /**
@@ -120,11 +121,11 @@ class Http implements HttpInterface
         $contentMd5 = self::getContentMd5($options);
 
         return [
-            'X-Tsign-Open-App-Id' => $this->app_id,
+            'X-Tsign-Open-App-Id' => $this->config['app_id'],
             'Content-Type' => 'application/json;charset=UTF-8',
             'X-Tsign-Open-Ca-Timestamp' => self::getMillisecond(),
             'Accept' => '*/*',
-            'X-Tsign-Open-Ca-Signature' => self::sign($url, $method, $contentMd5, $this->app_key),
+            'X-Tsign-Open-Ca-Signature' => self::sign($url, $method, $contentMd5, $this->config['app_key']),
             'X-Tsign-Open-Auth-Mode' => 'Signature',
             'Content-MD5' => $contentMd5,
         ];
@@ -209,7 +210,7 @@ class Http implements HttpInterface
                 $this->app['log']->info("[请求参数] url:{$request->getUri()} method:{$request->getMethod()}", $response);
             },
             function (Request $request, $options, $response) {
-                if (!$response instanceof Response) {
+                if (! $response instanceof Response) {
                     $response = $response->wait(true);
                 }
                 $status = $response->getStatusCode();
@@ -220,5 +221,4 @@ class Http implements HttpInterface
 
         $this->putMiddleware('tap', $tap);
     }
-
 }
