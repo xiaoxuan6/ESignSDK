@@ -11,17 +11,19 @@
 
 namespace Vinhson\EsignSdk\Kernel;
 
-use Monolog\Logger;
-use Vinhson\EsignSdk\Application;
-use Monolog\Handler\{RotatingFileHandler};
-use Vinhson\EsignSdk\Kernel\Traits\SignatureTrait;
-use Vinhson\EsignSdk\Kernel\Contracts\HttpInterface;
-use Vinhson\EsignSdk\Kernel\Exception\{InvalidClassException, InvalidFileException};
 use GuzzleHttp\{Client, Exception\GuzzleException, HandlerStack, Middleware, Psr7\Request, Psr7\Response};
+use Vinhson\EsignSdk\Application;
+use Vinhson\EsignSdk\Kernel\Contracts\HttpInterface;
+use Vinhson\EsignSdk\Kernel\Traits\SignatureTrait;
 
 class Http implements HttpInterface
 {
     use SignatureTrait;
+
+    /**
+     * @var Application
+     */
+    public $app;
 
     private $app_id;
     private $app_key;
@@ -46,13 +48,9 @@ class Http implements HttpInterface
      */
     private $handlerStack = null;
 
-    /**
-     * @var Logger
-     */
-    private $log;
-
     public function __construct(Application $app)
     {
+        $this->app = $app;
         $options = $app->config;
         $this->app_id = $options['app_id'];
         $this->app_key = $options['app_key'];
@@ -63,26 +61,8 @@ class Http implements HttpInterface
         $this->options['base_uri'] = $client['base_uri'] ?? '';
 
         if ($client['log'] ?? false) {
-            $this->setLogDriver($client);
+            $this->logMiddleware();
         }
-    }
-
-    protected function setLogDriver(array $client)
-    {
-        $logPath = $client['log_path'] ?? '';
-
-        $class = "Monolog\\Logger";
-
-        if (! class_exists($class)) {
-            throw new InvalidClassException("Class {$class} not exists!");
-        }
-
-        if (! $logPath) {
-            throw new InvalidFileException("Log path is an invalid file");
-        }
-
-        $this->createLogger($logPath, $client['log_max'] ?? 7);
-        $this->tapMiddleware();
     }
 
     /**
@@ -105,9 +85,9 @@ class Http implements HttpInterface
         $option = $handler ? ['handler' => $handler] : [];
 
         return $this->client ?? $this->client = new Client(array_merge(
-            $this->options,
-            $option
-        ));
+                $this->options,
+                $option
+            ));
     }
 
     /**
@@ -221,34 +201,24 @@ class Http implements HttpInterface
     /**
      * log middleware
      */
-    private function tapMiddleware()
+    private function logMiddleware()
     {
-        $log = $this->log;
         $tap = Middleware::tap(
-            function (Request $request, $options) use ($log) {
+            function (Request $request, $options) {
                 $response = json_decode($request->getBody()->getContents(), JSON_UNESCAPED_UNICODE);
-                $log->info("[请求参数] url:{$request->getUri()} method:{$request->getMethod()}", $response);
+                $this->app['log']->info("[请求参数] url:{$request->getUri()} method:{$request->getMethod()}", $response);
             },
-            function (Request $request, $options, $response) use ($log) {
-                if (! $response instanceof Response) {
+            function (Request $request, $options, $response) {
+                if (!$response instanceof Response) {
                     $response = $response->wait(true);
                 }
                 $status = $response->getStatusCode();
                 $response = $response->getBody()->getContents();
-                $log->info("[响应参数] code:{$status}", json_decode($response, JSON_UNESCAPED_UNICODE));
+                $this->app['log']->info("[响应参数] code:{$status}", json_decode($response, JSON_UNESCAPED_UNICODE));
             }
         );
 
         $this->putMiddleware('tap', $tap);
     }
 
-    /**
-     * @param string $logPath
-     * @param $logMax
-     */
-    private function createLogger(string $logPath, $logMax)
-    {
-        $this->log = new Logger('log');
-        $this->log->pushHandler(new RotatingFileHandler($logPath, $logMax));
-    }
 }
