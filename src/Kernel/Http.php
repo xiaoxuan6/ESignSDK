@@ -190,8 +190,8 @@ class Http implements HttpInterface
 
         $this->handlerStack = HandlerStack::create();
 
-        if ($this->middlewares) {
-            foreach ($this->middlewares as $name => $middleware) {
+        if ($middlewares = $this->getMiddlewares()) {
+            foreach ($middlewares as $name => $middleware) {
                 $this->handlerStack->push($middleware, $name);
             }
         }
@@ -219,6 +219,6 @@ class Http implements HttpInterface
             }
         );
 
-        $this->putMiddleware('tap', $tap);
+        $this->putMiddleware('log', $tap);
     }
 }
