@@ -26,7 +26,7 @@ class Http implements HttpInterface
     public $app;
 
     /**
-     * @var array
+     * @var Config
      */
     private $config;
 
@@ -53,15 +53,13 @@ class Http implements HttpInterface
     public function __construct(Application $app)
     {
         $this->app = $app;
-        $options = $app->config;
-        $this->config = $options;
+        $this->config = $app['config'];
 
-        $client = $options['client'];
-        $this->options['verify'] = $client['verify'] ?? true;
-        $this->options['timeout'] = $client['timeout'] ?? 5;
-        $this->options['base_uri'] = $client['base_uri'] ?? '';
+        $this->options['verify'] = $this->config->getClientVerify();
+        $this->options['timeout'] = $this->config->getClientTimeout();
+        $this->options['base_uri'] = $this->config->getClientBaseUri();
 
-        if ($client['log'] ?? false) {
+        if ($this->config->getLogEnable()) {
             $this->logMiddleware();
         }
     }
@@ -121,11 +119,11 @@ class Http implements HttpInterface
         $contentMd5 = self::getContentMd5($options);
 
         return [
-            'X-Tsign-Open-App-Id' => $this->config['app_id'],
+            'X-Tsign-Open-App-Id' => $this->config->getAppId(),
             'Content-Type' => 'application/json;charset=UTF-8',
             'X-Tsign-Open-Ca-Timestamp' => self::getMillisecond(),
             'Accept' => '*/*',
-            'X-Tsign-Open-Ca-Signature' => self::sign($url, $method, $contentMd5, $this->config['app_key']),
+            'X-Tsign-Open-Ca-Signature' => self::sign($url, $method, $contentMd5, $this->config->getAppKey()),
             'X-Tsign-Open-Auth-Mode' => 'Signature',
             'Content-MD5' => $contentMd5,
         ];

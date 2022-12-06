@@ -22,22 +22,25 @@ class Logger
      */
     public Application $app;
 
-    public array $config;
+    /**
+     * @var Config
+     */
+    public Config $config;
 
     /**
      * @var \Monolog\Logger
      */
-    public $logger;
+    public \Monolog\Logger $logger;
 
     public function __construct(Application $application)
     {
         $this->app = $application;
-        $this->config = $this->app->config['client'] ?? [];
+        $this->config = $this->app['config'];
     }
 
-    public function setLogDriver()
+    public function setLogDriver(): \Monolog\Logger
     {
-        $logPath = $this->config['log_path'] ?? '';
+        $logPath = $this->config->getLogPath();
 
         $class = "Monolog\\Logger";
 
@@ -50,7 +53,7 @@ class Logger
         }
 
 
-        return $this->logger ?? $this->logger = $this->createLogger($logPath, $this->config['log_max'] ?? 7);
+        return $this->logger ?? $this->logger = $this->createLogger($logPath, $this->config->getLogMax());
     }
 
     /**

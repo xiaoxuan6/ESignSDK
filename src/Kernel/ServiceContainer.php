@@ -39,6 +39,11 @@ class ServiceContainer extends Container
         return $this->providers;
     }
 
+    public function getConfig(): array
+    {
+        return $this->config;
+    }
+
     public function __get($id)
     {
         return $this->offsetGet($id);

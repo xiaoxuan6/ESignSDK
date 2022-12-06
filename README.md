@@ -7,22 +7,19 @@
 
 ```angular2html
 $config = [
+    'mode' => 'dev', // dev:测试(默认) prod:正式
     'app_id' => 'xxx',
     'app_key' => 'xxx',
     'client' => [
-        // 测试域名 'https://smlopenapi.esign.cn',
-        // 正式域名 'https://openapi.esign.cn',
-        'base_uri' => 'https://smlopenapi.esign.cn',
         'verify' => false,
         'timeout' => 10,
-
-        /**
-        * 日志配置信息
-        */
-        'log' => true // 是否记录请求和响应数据
-        'log_path' => __DIR__ . '/../access.log',
-        'log_max' => 7 // 日志保留天数
-    ]
+    ],
+    /**
+    * 日志配置信息
+    */
+    // 'log' => true // 是否记录请求和响应数据
+    // 'log_path' => __DIR__ . '/../access.log',
+    // 'log_max' => 7 // 日志保留天数
 ];
 
 $app = new Vinhson\EsignSdk\Application($config);

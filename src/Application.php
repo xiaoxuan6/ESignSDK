@@ -11,7 +11,10 @@
 
 namespace Vinhson\EsignSdk;
 
-use Vinhson\EsignSdk\Kernel\{Providers\HttpServiceProvider, Providers\LoggerServerProvider, ServiceContainer};
+use Vinhson\EsignSdk\Kernel\{Providers\ConfigServiceProvider,
+    Providers\HttpServiceProvider,
+    Providers\LoggerServerProvider,
+    ServiceContainer};
 
 /**
  * Class Application
@@ -28,6 +31,7 @@ class Application extends ServiceContainer
     protected $providers = [
         LoggerServerProvider::class,
         HttpServiceProvider::class,
+        ConfigServiceProvider::class,
         OCR\ServiceProvider::class,
         Enterprise\ServiceProvider::class,
         Info\ServiceProvider::class,
