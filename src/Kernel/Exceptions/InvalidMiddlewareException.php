@@ -11,8 +11,8 @@
 
 namespace Vinhson\EsignSdk\Kernel\Exceptions;
 
-use InvalidArgumentException;
+use Exception;
 
-class InvalidFileException extends InvalidArgumentException
+class InvalidMiddlewareException extends Exception
 {
 }

@@ -13,7 +13,7 @@ namespace Vinhson\EsignSdk\Kernel;
 
 use Vinhson\EsignSdk\Application;
 use Monolog\Handler\RotatingFileHandler;
-use Vinhson\EsignSdk\Kernel\Exception\{InvalidClassException, InvalidFileException};
+use Vinhson\EsignSdk\Kernel\Exceptions\{InvalidClassException, InvalidFileException};
 
 class Logger
 {

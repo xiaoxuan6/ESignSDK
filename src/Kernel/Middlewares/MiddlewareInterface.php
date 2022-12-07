@@ -9,10 +9,11 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Vinhson\EsignSdk\Kernel\Exceptions;
+namespace Vinhson\EsignSdk\Kernel\Middlewares;
 
-use InvalidArgumentException;
+use Vinhson\EsignSdk\Application;
 
-class InvalidFileException extends InvalidArgumentException
+interface MiddlewareInterface
 {
+    public static function handle(Application $app): callable;
 }

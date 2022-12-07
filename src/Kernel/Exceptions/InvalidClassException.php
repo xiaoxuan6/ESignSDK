@@ -9,7 +9,7 @@
  * with this source code in the file LICENSE.
  */
 
-namespace Vinhson\EsignSdk\Kernel\Exception;
+namespace Vinhson\EsignSdk\Kernel\Exceptions;
 
 use InvalidArgumentException;
 

@@ -14,7 +14,9 @@ namespace Vinhson\EsignSdk\Kernel;
 use Vinhson\EsignSdk\Application;
 use Vinhson\EsignSdk\Kernel\Traits\SignatureTrait;
 use Vinhson\EsignSdk\Kernel\Contracts\HttpInterface;
-use GuzzleHttp\{Client, Exception\GuzzleException, HandlerStack, Middleware, Psr7\Request, Psr7\Response};
+use Vinhson\EsignSdk\Kernel\Middlewares\MiddlewareInterface;
+use GuzzleHttp\{Client, Exception\GuzzleException, HandlerStack};
+use Vinhson\EsignSdk\Kernel\Exceptions\InvalidMiddlewareException;
 
 class Http implements HttpInterface
 {
@@ -41,11 +43,6 @@ class Http implements HttpInterface
     private $client;
 
     /**
-     * @var array
-     */
-    private $middlewares = [];
-
-    /**
      * @var HandlerStack
      */
     private $handlerStack = null;
@@ -58,21 +55,6 @@ class Http implements HttpInterface
         $this->options['verify'] = $this->config->getClientVerify();
         $this->options['timeout'] = $this->config->getClientTimeout();
         $this->options['base_uri'] = $this->config->getClientBaseUri();
-
-        if ($this->config->getLogEnable()) {
-            $this->logMiddleware();
-        }
-    }
-
-    /**
-     * @param Client $client
-     * @return Http
-     */
-    public function setClient(Client $client): Http
-    {
-        $this->client = $client;
-
-        return $this;
     }
 
     /**
@@ -143,42 +125,29 @@ class Http implements HttpInterface
     }
 
     /**
-     * @param string $name
-     * @param callable $middleware
-     * @return $this
-     */
-    protected function putMiddleware(string $name, callable $middleware): Http
-    {
-        if (empty($name)) {
-            array_push($this->middlewares, $middleware);
-        } else {
-            $this->middlewares[$name] = $middleware;
-        }
-
-        return $this;
-    }
-
-    /**
      * @return array
+     * @throws InvalidMiddlewareException
      */
     public function getMiddlewares(): array
     {
-        return $this->middlewares;
-    }
+        $middlewares = $this->config->getMiddlewares();
 
-    /**
-     * @param HandlerStack $handlerStack
-     * @return $this
-     */
-    public function setHandlerStack(HandlerStack $handlerStack): Http
-    {
-        $this->handlerStack = $handlerStack;
+        foreach ($middlewares as $name => $middleware) {
+            if (! (new $middleware() instanceof MiddlewareInterface)) {
+                throw new InvalidMiddlewareException("Class {$middleware} must implements \\Vinhson\\EsignSdk\\Kernel\\Middlewares\\MiddlewareInterface::class");
+            }
 
-        return $this;
+            if (! $this->config->getLogEnable()) {
+                unset($middlewares['log']);
+            }
+        }
+
+        return $middlewares;
     }
 
     /**
      * @return HandlerStack
+     * @throws InvalidMiddlewareException
      */
     private function getHandler(): HandlerStack
     {
@@ -190,33 +159,11 @@ class Http implements HttpInterface
 
         if ($middlewares = $this->getMiddlewares()) {
             foreach ($middlewares as $name => $middleware) {
-                $this->handlerStack->push($middleware, $name);
+                /** @var $middleware MiddlewareInterface */
+                $this->handlerStack->push($middleware::handle($this->app), $name);
             }
         }
 
         return $this->handlerStack;
-    }
-
-    /**
-     * log middleware
-     */
-    private function logMiddleware()
-    {
-        $tap = Middleware::tap(
-            function (Request $request, $options) {
-                $response = json_decode($request->getBody()->getContents(), JSON_UNESCAPED_UNICODE);
-                $this->app['log']->info("[请求参数] url:{$request->getUri()} method:{$request->getMethod()}", $response);
-            },
-            function (Request $request, $options, $response) {
-                if (! $response instanceof Response) {
-                    $response = $response->wait(true);
-                }
-                $status = $response->getStatusCode();
-                $response = $response->getBody()->getContents();
-                $this->app['log']->info("[响应参数] code:{$status}", json_decode($response, JSON_UNESCAPED_UNICODE));
-            }
-        );
-
-        $this->putMiddleware('log', $tap);
     }
 }

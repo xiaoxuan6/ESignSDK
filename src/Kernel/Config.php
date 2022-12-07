@@ -26,6 +26,9 @@ class Config
             'verify' => false,
             'timeout' => 10,
         ],
+        'middlewares' => [
+            'log' => \Vinhson\EsignSdk\Kernel\Middlewares\LogMiddleware::class,
+        ],
         /**
          * 日志配置信息
          */
@@ -41,7 +44,7 @@ class Config
 
     public function __construct(array $config = [])
     {
-        $this->config = array_merge(self::DEFAULT_CONFIG, $config);
+        $this->config = array_replace_recursive(self::DEFAULT_CONFIG, $config);
     }
 
     public function getAppId()
@@ -69,6 +72,11 @@ class Config
         return $this->config['client']['timeout'];
     }
 
+    public function getMiddlewares()
+    {
+        return $this->config['middlewares'];
+    }
+
     public function getLogEnable()
     {
         return $this->config['log_enable'];
@@ -82,5 +90,10 @@ class Config
     public function getLogMax()
     {
         return $this->config['log_max'];
+    }
+
+    public function toArray(): array
+    {
+        return $this->config;
     }
 }

@@ -56,6 +56,6 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
         $this->app = new Application($this->config);
 
-        var_export($this->app->ocr->idCard('xxxx', ''));
+        var_export($this->app->ocr->idCard('xxxx', '')->getReason());
     }
 }
