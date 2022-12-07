@@ -133,7 +133,7 @@ class Http implements HttpInterface
         $middlewares = $this->config->getMiddlewares();
 
         foreach ($middlewares as $name => $middleware) {
-            if (! (new $middleware() instanceof MiddlewareInterface)) {
+            if (class_exists($middleware) && ! (new $middleware() instanceof MiddlewareInterface)) {
                 throw new InvalidMiddlewareException("Class {$middleware} must implements \\Vinhson\\EsignSdk\\Kernel\\Middlewares\\MiddlewareInterface::class");
             }
 

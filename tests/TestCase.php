@@ -55,7 +55,11 @@ class TestCase extends \PHPUnit\Framework\TestCase
         $this->assertTrue(true);
 
         $this->app = new Application($this->config);
-
         var_export($this->app->ocr->idCard('xxxx', '')->getReason());
+
+        // 关闭日志
+        $app = new Application($this->config + ['log_enable' => false]);
+        var_export($app->ocr->idCard('xxxx', '')->getReason());
+
     }
 }
